@@ -1,8 +1,8 @@
 
-name: "my-website"
+name: "bst-260-site"
 output_dir: "."
 navbar:
-  title: "My Website"
+  title: "BST 260"
   left:
     - text: "Home"
       href: index.html

@@ -1,10 +1,168 @@
 ---
-title: "about"
-author: "Katherine Wang"
-date: "12/7/2017"
+title: "Analysis"
 output: html_document
 ---
+```{r, include=FALSE}
+library(tidyverse)
+library(dplyr)
+library(fiftystater)
+library(RColorBrewer)
+library(zipcode)
+data("fifty_states")
+data("zipcode")
+states_map <- map_data("state")
+```
+```{r, echo=FALSE}
+dat_merge <- readRDS("~/Desktop/BST 260/BST-260-Final-Project/dat_merge.rds")
+phys <- readRDS("~/Desktop/BST 260/BST-260-Final-Project/phys.rds")
 
-* cool
-* beans
-* !!!!
+state_name <- c(state.name,"District Of Columbia")
+states <- data.frame(state_name = state_name, state_abb = c(state.abb, "DC"))
+```
+
+
+### Vendors
+
+Of the 265 vendors used by practitioners in our dataset, we found that 58.5% of the products used were from the top 10 most popular vendors. 
+
+```{r, echo=FALSE, message=FALSE}
+top10 <- dat_merge %>% 
+  filter(!is.na(Vendor_Name)) %>% 
+  group_by(Vendor_Name) %>% 
+  summarize(num = n()) %>% 
+  arrange(desc(num)) %>% top_n(10)
+
+vendors <- as.vector(top10$Vendor_Name)
+
+dat_merge %>% filter(Vendor_Name %in% vendors) %>% 
+  group_by(Vendor_Name) %>% 
+  summarise(num = n()) %>% 
+  ggplot(aes(x = reorder(Vendor_Name, num), y = num)) + 
+    geom_bar(stat='identity') + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    xlab("") +
+    ylab("Number of Products Used") +
+    ggtitle("Most Popular Vendors")
+```
+
+
+```{r, echo=FALSE}
+pct_popvendors <- dat_merge %>% 
+  group_by(Business_State_Territory) %>% 
+  summarize(num = n(), 
+            total_v = sum(Vendor_Name %in% vendors),
+            opp = num - total_v) %>% 
+  mutate(p_vend = total_v/num, u_vend = opp/num)
+
+pct_popvendors %>% 
+  ggplot() +
+  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
+  geom_map(aes(map_id = tolower(Business_State_Territory), fill = p_vend), map = fifty_states, color="grey50") +
+  coord_map() +
+  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
+  expand_limits(x=states_map$long, y=states_map$lat) +
+  theme_bw() +
+  theme(axis.text = element_blank(), 
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.title = element_blank(),
+        legend.position = "right",
+        legend.title = element_blank()) +
+  ggtitle("Usage of Top 10 Vendors")
+```
+
+We can see that the most popular vendors are used very popularly in Minnesota, but in New York, Tennessee, Rhode Island, and Nevada.
+
+
+Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota compared to the rest of the United States.
+```{r, echo=FALSE}
+age <- dat_merge %>% filter(!is.na(Graduation.year)) %>% group_by(Business_State_Territory) %>% summarize(yrsgrad = mean(2016 - Graduation.year))
+
+age %>% 
+  ggplot() +
+  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
+  geom_map(aes(map_id = tolower(Business_State_Territory), fill = yrsgrad), map = fifty_states, color="grey50") +
+  coord_map() +
+  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
+  expand_limits(x=states_map$long, y=states_map$lat) +
+  theme_bw() +
+  theme(axis.text = element_blank(), 
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.title = element_blank(),
+        legend.position = "right",
+        legend.title = element_blank()) +
+  ggtitle("Years Since Graduation")
+```
+
+```{r, echo = FALSE}
+mn <- subset(states_map, region %in% c("minnesota"))
+
+zip_mapdata <- dat_merge %>% 
+  filter(!is.na(Graduation.year) & Business_State_Territory == "Minnesota") %>% 
+  group_by(ZIP) %>% 
+  summarize(yrsgrad = mean(2016 - Graduation.year)) %>% 
+  left_join(zipcode, by = c("ZIP" = "zip"))
+
+zip_mapdata %>% 
+  ggplot() +
+  geom_polygon(data=mn, aes(x=long, y=lat, group = group),colour="white", fill="grey70" ) +
+  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=2,alpha=.5) +
+  coord_fixed(1.5) +
+  theme_void()
+```
+
+
+** add product setting graphs? **
+
+### Phys
+
+```{r, warning=FALSE, echo=FALSE}
+useehr <- phys %>% 
+  group_by(State) %>% 
+  summarize(num = n(), used = sum(Used.electronic.health.records == "Y")) %>% 
+  mutate(pct = used/num)
+useehr <- useehr %>% left_join(states, by = c("State" = "state_abb"))
+
+useehr %>% 
+  ggplot() +
+  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
+  geom_map(aes(map_id = tolower(state_name), fill = pct), map = fifty_states, color="grey50") +
+  coord_map() +
+  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
+  expand_limits(x=states_map$long, y=states_map$lat) +
+  theme_bw() +
+  theme(axis.text = element_blank(), 
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.title = element_blank(),
+        legend.position = "right",
+        legend.title = element_blank()) +
+  ggtitle("Percent EHR Usage")
+```
+
+Using Association Rule Learning, we found that the strongest associations exist between practitioners with the following characteristics:
+
+* Using 5 EHR products across 2 different vendors in the state of Minnesota
+* Using 7 EHR products across 2 different vendors in the state of California
+
+```{r,echo=FALSE}
+#most common specialties in general
+dat_merge %>% group_by(Primary.specialty) %>% summarize(num = n()) %>% arrange(desc(num))
+
+# most common state -> specialty
+#dat_merge %>% group_by(Business_State_Territory, Primary.specialty) %>% summarize(num = n()) %>% arrange(Business_State_Territory, desc(num))
+```
+
+### Hosp
+
+* size of hospital influences all other hospital variables, so it is a confounder
+* female proportion has the strongest correlation to years since graduation?
+* 2 most strongly correlated variables = # phys and gross patient rev?
+* stratifying by gross patient revenue in GLM, the only significant = # phys

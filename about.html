@@ -9,10 +9,9 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="Katherine Wang" />
 
 
-<title>about</title>
+<title>Analysis</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -174,7 +173,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">My Website</a>
+      <a class="navbar-brand" href="index.html">BST 260</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -196,18 +195,53 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">about</h1>
-<h4 class="author"><em>Katherine Wang</em></h4>
-<h4 class="date"><em>12/7/2017</em></h4>
+<h1 class="title toc-ignore">Analysis</h1>
 
 </div>
 
 
+<div id="vendors" class="section level3">
+<h3>Vendors</h3>
+<p>Of the 265 vendors used by practitioners in our dataset, we found that 58.5% of the products used were from the top 10 most popular vendors.</p>
+<p><img src="about_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>We can see that the most popular vendors are used very popularly in Minnesota, but in New York, Tennessee, Rhode Island, and Nevada.</p>
+<p>Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota compared to the rest of the United States. <img src="about_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>** add product setting graphs? **</p>
+</div>
+<div id="phys" class="section level3">
+<h3>Phys</h3>
+<p><img src="about_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p>Using Association Rule Learning, we found that the strongest associations exist between practitioners with the following characteristics:</p>
 <ul>
-<li>cool</li>
-<li>beans</li>
-<li>!!!!</li>
+<li>Using 5 EHR products across 2 different vendors in the state of Minnesota</li>
+<li>Using 7 EHR products across 2 different vendors in the state of California</li>
 </ul>
+<pre><code>## # A tibble: 66 x 2
+##        Primary.specialty   num
+##                   &lt;fctr&gt; &lt;int&gt;
+##  1             OPTOMETRY  5939
+##  2          CHIROPRACTIC  4278
+##  3           DERMATOLOGY  2970
+##  4         OPHTHALMOLOGY  2359
+##  5       FAMILY PRACTICE  1996
+##  6     INTERNAL MEDICINE  1375
+##  7 OBSTETRICS/GYNECOLOGY   877
+##  8              PODIATRY   847
+##  9            PSYCHIATRY   740
+## 10             NEUROLOGY   558
+## # ... with 56 more rows</code></pre>
+</div>
+<div id="hosp" class="section level3">
+<h3>Hosp</h3>
+<ul>
+<li>size of hospital influences all other hospital variables, so it is a confounder</li>
+<li>female proportion has the strongest correlation to years since graduation?</li>
+<li>2 most strongly correlated variables = # phys and gross patient rev?</li>
+<li>stratifying by gross patient revenue in GLM, the only significant = # phys</li>
+</ul>
+</div>
 
 
 
