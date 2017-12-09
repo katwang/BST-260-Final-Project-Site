@@ -6,7 +6,7 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "About"
+    - text: "Analysis"
       href: about.html
 output:
   html_document:
