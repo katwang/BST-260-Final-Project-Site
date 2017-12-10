@@ -1,23 +1,18 @@
 ---
-title: "Trends in Adoption of Electronic Health Records"
+title: "Trends in Adoption of Electronic Health Records in the United States"
 author: "Katherine Wang, Eunice Yeh, Lauren Yoo"
 output: html_document
 ---
 
-# Overview
 
-## Background and Motivation
+### Background and Motivation
 
 In the past 10 years, there has been a lot of discussion around the benefits and risks of adopting electronic health records (EHR's). Many news sources have covered the topic, and multiple government agencies have published recommendations and articles on the adoption of EHR's. From 2008 to 2015, the number of office-based practitioners with EHR systems doubled, proving that the popularity of EHR's are only increasing [(Healthit.gov)](https://dashboard.healthit.gov/quickstats/pages/physician-ehr-adoption-trends.php).
 
 In 2011, the Centers for Medicare & Medicaid Services (CMS) initiated the Medicare and Medicaid Electronic Health Record Incentive Programs to encourage medical professionals to adopt EHR technology. The program includes incentives for different stages of implementation, including establishing EHR requirements, demonstrating meaningful use, and a final stage to demonstrate improved health outcomes that will start this year (2017).
 
 
-Suggested Citation:
-
-Office of the National Coordinator for Health Information Technology. 'Office-based Physician Electronic Health Record Adoption,' Health IT Quick-Stat #50. dashboard.healthit.gov/quickstats/pages/physician-ehr-adoption-trends.php. December 2016.
-
-## Project Objectives
+### Project Objectives
 
 We looked at hospital and physician level data from 2016 to see if there might be some similar characteristics of healthcare providers who are and are not adopting EHR use. Since EHR's are a technology-based implementation, our group wanted to see if younger physicans are more likely to adopt EHR technology. What are some of the factors that might be associated with adoptation of EHR's? Additionally, we know that physicians working in hospitals do not have a choice in adopting EHR's. As a result, we wanted to see if there were hospital-related factors affecting adoption of EHRs. 
 
@@ -33,7 +28,7 @@ The following terms were defined as follows from our dataset:
 > * A certified EHR system is one that meets the requirements adopted by the US Department of Health and Human Services.
 
 
-## Conclusions
+### Conclusions
 Ultimately, we found that a physician's gender and years since graduation were significantly correlated to use of Electronic Health Records. The odds of adopting EHR's were higher for males than they were for females, and the odds of adopting EHR's increased as the years since graduation increased. This was an interesting finding because we intially thought younger physicians may be more likely to adopt EHR's due to more familiarity with modern technology, but this was not the case. Note: we used years since graduation as an indicator of physician age.
 
 Hosp
@@ -44,9 +39,13 @@ Vendor?
 
 
 **footer?**
-For more detailed information regarding our analysis, please see the following links:
+
+
+#### For more detailed information regarding our analysis, please see the following links:
 
 * Our data and code can be found in our project GitHub, available [here](https://euniceyeh.github.io/EHR-Project/work.html) and [here](https://github.com/euniceyeh/EHR-Project)
 * Screencast available [here]() *add link!!!!*
 
+#### References:
 
+Office of the National Coordinator for Health Information Technology. 'Office-based Physician Electronic Health Record Adoption,' Health IT Quick-Stat #50. dashboard.healthit.gov/quickstats/pages/physician-ehr-adoption-trends.php. December 2016.

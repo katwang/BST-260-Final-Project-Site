@@ -21,109 +21,9 @@ states <- data.frame(state_name = state_name, state_abb = c(state.abb, "DC"))
 ```
 
 
-### Vendors
-
-Of the 265 vendors used by practitioners in our dataset, we found that 58.5% of the products used were from the top 10 most popular vendors. 
-
-```{r, echo=FALSE, message=FALSE}
-top10 <- dat_merge %>% 
-  filter(!is.na(Vendor_Name)) %>% 
-  group_by(Vendor_Name) %>% 
-  summarize(num = n()) %>% 
-  arrange(desc(num)) %>% top_n(10)
-
-vendors <- as.vector(top10$Vendor_Name)
-
-dat_merge %>% filter(Vendor_Name %in% vendors) %>% 
-  group_by(Vendor_Name) %>% 
-  summarise(num = n()) %>% 
-  ggplot(aes(x = reorder(Vendor_Name, num), y = num)) + 
-    geom_bar(stat='identity') + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    xlab("") +
-    ylab("Number of Products Used") +
-    ggtitle("Most Popular Vendors")
-```
-
-
-```{r, echo=FALSE}
-pct_popvendors <- dat_merge %>% 
-  group_by(Business_State_Territory) %>% 
-  summarize(num = n(), 
-            total_v = sum(Vendor_Name %in% vendors),
-            opp = num - total_v) %>% 
-  mutate(p_vend = total_v/num, u_vend = opp/num)
-
-pct_popvendors %>% 
-  ggplot() +
-  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
-  geom_map(aes(map_id = tolower(Business_State_Territory), fill = p_vend), map = fifty_states, color="grey50") +
-  coord_map() +
-  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
-  expand_limits(x=states_map$long, y=states_map$lat) +
-  theme_bw() +
-  theme(axis.text = element_blank(), 
-        axis.line = element_blank(), 
-        axis.ticks = element_blank(), 
-        panel.border = element_blank(), 
-        panel.grid = element_blank(), 
-        axis.title = element_blank(),
-        legend.position = "right",
-        legend.title = element_blank()) +
-  ggtitle("Usage of Top 10 Vendors")
-```
-
-We can see that the most popular vendors are used very popularly in Minnesota, but not in New York, Tennessee, Rhode Island, and Nevada.
-
-
-Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota who use EHR compared to the rest of the United States.
-```{r, echo=FALSE}
-age <- dat_merge %>% filter(!is.na(Graduation.year)) %>% group_by(Business_State_Territory) %>% summarize(yrsgrad = mean(2016 - Graduation.year))
-
-age %>% 
-  ggplot() +
-  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
-  geom_map(aes(map_id = tolower(Business_State_Territory), fill = yrsgrad), map = fifty_states, color="grey50") +
-  coord_map() +
-  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
-  expand_limits(x=states_map$long, y=states_map$lat) +
-  theme_bw() +
-  theme(axis.text = element_blank(), 
-        axis.line = element_blank(), 
-        axis.ticks = element_blank(), 
-        panel.border = element_blank(), 
-        panel.grid = element_blank(), 
-        axis.title = element_blank(),
-        legend.position = "right",
-        legend.title = element_blank()) +
-  ggtitle("Years Since Graduation")
-```
-
-Taking a closer look at the graduation year data in Minnesota, there was no clear pattern where there were more younger or older physicians. We could, however, tell that most of the physicians reported in this incentive program were based near Minneapolis.
-```{r, echo = FALSE}
-mn <- subset(states_map, region %in% c("minnesota"))
-
-zip_mapdata <- dat_merge %>% 
-  filter(!is.na(Graduation.year) & Business_State_Territory == "Minnesota") %>% 
-  group_by(ZIP) %>% 
-  summarize(yrsgrad = mean(2016 - Graduation.year)) %>% 
-  left_join(zipcode, by = c("ZIP" = "zip"))
-
-zip_mapdata %>% 
-  ggplot() +
-  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
-  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=2,alpha=.5) +
-  coord_fixed(xlim = c(-88, -98),  ylim = c(42, 50), ratio = 1.5) +
-  theme_void() +
-  theme(legend.title = element_blank())
-```
-
-
-** add product setting graphs? **
-
 ### The Physician-Level Model
 
-#### To explore physician-level data, we used two methods to find associations.
+#### To explore physician-level data, we used two methods to find associations between variables.
 
 Because we had many categorical variables with a large number of levels, we used association rule learning to explore the relationship between our variables of interest. From this method, we found that the following factors had the most meaningful associations:
 
@@ -179,11 +79,174 @@ Locations | 1.0024 | 0.9978 | 1.0060
 ### The Hospital-Level Model
 
 
-
 * size of hospital influences all other hospital variables, so it is a confounder
 * female proportion has the strongest correlation to years since graduation?
 * 2 most strongly correlated variables = # phys and gross patient rev?
 * stratifying by gross patient revenue in GLM, the only significant = # phys
 
 
+
+### Secondary Analyses
+
+Of the 265 vendors used by practitioners in our dataset, we found that over 50% of the products used were from the top 10 most popular vendors. 
+
+```{r, echo=FALSE, message=FALSE}
+top10 <- dat_merge %>% 
+  filter(!is.na(Vendor_Name)) %>% 
+  group_by(Vendor_Name) %>% 
+  summarize(num = n()) %>% 
+  arrange(desc(num)) %>% top_n(10)
+
+vendors <- as.vector(top10$Vendor_Name)
+
+dat_merge %>% filter(Vendor_Name %in% vendors) %>% 
+  group_by(Vendor_Name) %>% 
+  summarise(num = n()) %>% 
+  ggplot(aes(x = reorder(Vendor_Name, num), y = num)) + 
+    geom_bar(stat='identity') + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    xlab("") +
+    ylab("Number of Products Used") +
+    ggtitle("Most Popular Vendors")
+```
+
+We compared the most common vendors to the most commone primary specialties and found some interesting patterns:
+
+```{r, echo= FALSE}
+#specialty vs year since graduation
+top_spec <- dat_merge %>% 
+  filter(!is.na(Primary.specialty)) %>% 
+  group_by(Primary.specialty) %>% 
+  summarize(num = n()) %>% 
+  arrange(desc(num)) %>% head(10)
+
+spec_list <- c("OPTOMETRY", "CHIROPRACTIC", "DERMATOLOGY", "OPHTHALMOLOGY", "FAMILY PRACTICE", "INTERNAL MEDICINE", "OBSTETRICS/GYNECOLOGY", "PODIATRY", "PSYCHIATRY", "NEUROLOGY")
+
+#top vendors vs top specialty
+dat_merge %>% 
+  filter((Primary.specialty %in% spec_list) & (Vendor_Name %in% vendors)) %>% 
+  ggplot(aes(Primary.specialty, Vendor_Name)) + 
+  geom_jitter(aes(alpha = 0.2), size = 0.7, color = "steelblue4") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none",
+        axis.title = element_blank()) +
+  ggtitle("Top 10 Primary Specialties vs. Top 10 Vendors")
+```
+
+Some vendors are highly specialized
+
+  - Integrated Practice Solutions is only used by chiropractors and is the most popular product among chiropractors
+  - Eyefinity seems to only provide EHR products for eye care, since only opthalmologists and optometrists use their products
+  - Modernizing Medicine is very popular with dermatologists
+  - NextGen Healthcare seems to be the most popular EHR vendor in eye care
+
+Other vendors are just generally popular
+
+  - Examples include: Epic Systems, Cerner Corporation, and athenahealth
+
+
+
+Across the country, we can see that the most popular vendors are used very popularly in Minnesota, but not in New York, Tennessee, Rhode Island, and Nevada.
+
+```{r, echo=FALSE}
+pct_popvendors <- dat_merge %>% 
+  group_by(Business_State_Territory) %>% 
+  summarize(num = n(), 
+            total_v = sum(Vendor_Name %in% vendors),
+            opp = num - total_v) %>% 
+  mutate(p_vend = total_v/num, u_vend = opp/num)
+
+pct_popvendors %>% 
+  ggplot() +
+  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
+  geom_map(aes(map_id = tolower(Business_State_Territory), fill = p_vend), map = fifty_states, color="grey50") +
+  coord_map() +
+  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
+  expand_limits(x=states_map$long, y=states_map$lat) +
+  theme_bw() +
+  theme(axis.text = element_blank(), 
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.title = element_blank(),
+        legend.position = "right",
+        legend.title = element_blank()) +
+  ggtitle("Usage of Top 10 Vendors")
+```
+
+
+Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota who use EHR compared to the rest of the United States.
+
+```{r, echo=FALSE}
+age <- dat_merge %>% filter(!is.na(Graduation.year)) %>% group_by(Business_State_Territory) %>% summarize(yrsgrad = mean(2016 - Graduation.year))
+
+age %>% 
+  ggplot() +
+  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
+  geom_map(aes(map_id = tolower(Business_State_Territory), fill = yrsgrad), map = fifty_states, color="grey50") +
+  coord_map() +
+  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
+  expand_limits(x=states_map$long, y=states_map$lat) +
+  theme_bw() +
+  theme(axis.text = element_blank(), 
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        axis.title = element_blank(),
+        legend.position = "right",
+        legend.title = element_blank()) +
+  ggtitle("Years Since Graduation")
+```
+
+Taking a closer look at the graduation year data in Minnesota, we can see that most physicians lived near Minneapolis. It also seemed like more recently graduated physicians lived near the city, while older physicians tended to live farther away in suburban or rural areas.
+
+```{r, echo = FALSE}
+mn <- subset(states_map, region %in% c("minnesota"))
+
+zip_mapdata <- dat_merge %>% 
+  filter(!is.na(Graduation.year) & Business_State_Territory == "Minnesota") %>% 
+  group_by(ZIP) %>% 
+  summarize(yrsgrad = mean(2016 - Graduation.year)) %>% 
+  left_join(zipcode, by = c("ZIP" = "zip"))
+
+zip_mapdata %>% 
+  ggplot() +
+  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
+  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=2,alpha=.8) +
+  scale_colour_gradientn(colors = brewer.pal(8, "Reds")) +
+  coord_fixed(xlim = c(-88, -98),  ylim = c(42, 50), ratio = 1.5) +
+  theme_void() +
+  theme(legend.title = element_blank())
+```
+
+```{r, echo = FALSE}
+ny <- subset(states_map, region %in% c("new york"))
+
+zip_map_ny <- dat_merge %>% 
+  filter(!is.na(Graduation.year) & Business_State_Territory == "New York") %>% 
+  group_by(ZIP) %>% 
+  summarize(yrsgrad = mean(2016 - Graduation.year)) %>% 
+  left_join(zipcode, by = c("ZIP" = "zip"))
+
+zip_map_ny %>% 
+  ggplot() +
+  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
+  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=1,alpha=.8) +
+  scale_colour_gradientn(colors = brewer.pal(8, "Reds")) +
+  coord_fixed(xlim = c(-70, -80),  ylim = c(40, 45), ratio = 1.5) +
+  theme_void() +
+  theme(legend.title = element_blank())
+
+zip_map_ny %>% 
+  ggplot() +
+  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
+  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=1,alpha=.8) +
+  scale_colour_gradientn(colors = brewer.pal(8, "Reds")) +
+  coord_fixed(xlim = c(-72, -75),  ylim = c(40, 42), ratio = 1.5) +
+  theme_void() +
+  theme(legend.title = element_blank())
+```
 
