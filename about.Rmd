@@ -12,7 +12,7 @@ data("fifty_states")
 data("zipcode")
 states_map <- map_data("state")
 ```
-```{r, echo=FALSE}
+```{r merged data, echo=FALSE}
 dat_merge <- readRDS("~/Desktop/BST 260/BST-260-Final-Project/dat_merge.rds")
 phys <- readRDS("~/Desktop/BST 260/BST-260-Final-Project/phys.rds")
 
@@ -73,10 +73,10 @@ pct_popvendors %>%
   ggtitle("Usage of Top 10 Vendors")
 ```
 
-We can see that the most popular vendors are used very popularly in Minnesota, but in New York, Tennessee, Rhode Island, and Nevada.
+We can see that the most popular vendors are used very popularly in Minnesota, but not in New York, Tennessee, Rhode Island, and Nevada.
 
 
-Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota compared to the rest of the United States.
+Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota who use EHR compared to the rest of the United States.
 ```{r, echo=FALSE}
 age <- dat_merge %>% filter(!is.na(Graduation.year)) %>% group_by(Business_State_Territory) %>% summarize(yrsgrad = mean(2016 - Graduation.year))
 
@@ -99,6 +99,7 @@ age %>%
   ggtitle("Years Since Graduation")
 ```
 
+Taking a closer look at the graduation year data in Minnesota, there was no clear pattern where there were more younger or older physicians. We could, however, tell that most of the physicians reported in this incentive program were based near Minneapolis.
 ```{r, echo = FALSE}
 mn <- subset(states_map, region %in% c("minnesota"))
 
@@ -110,59 +111,79 @@ zip_mapdata <- dat_merge %>%
 
 zip_mapdata %>% 
   ggplot() +
-  geom_polygon(data=mn, aes(x=long, y=lat, group = group),colour="white", fill="grey70" ) +
+  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
   geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=2,alpha=.5) +
-  coord_fixed(1.5) +
-  theme_void()
+  coord_fixed(xlim = c(-88, -98),  ylim = c(42, 50), ratio = 1.5) +
+  theme_void() +
+  theme(legend.title = element_blank())
 ```
 
 
 ** add product setting graphs? **
 
-### Phys
+### The Physician-Level Model
 
-```{r, warning=FALSE, echo=FALSE}
-useehr <- phys %>% 
-  group_by(State) %>% 
-  summarize(num = n(), used = sum(Used.electronic.health.records == "Y")) %>% 
-  mutate(pct = used/num)
-useehr <- useehr %>% left_join(states, by = c("State" = "state_abb"))
+#### To explore physician-level data, we used two methods to find associations.
 
-useehr %>% 
-  ggplot() +
-  geom_map(aes(map_id = id), data = fifty_states, map = fifty_states, color="grey50", fill="grey90") +
-  geom_map(aes(map_id = tolower(state_name), fill = pct), map = fifty_states, color="grey50") +
-  coord_map() +
-  scale_fill_gradientn(colors = brewer.pal(6, "Reds")) +
-  expand_limits(x=states_map$long, y=states_map$lat) +
-  theme_bw() +
-  theme(axis.text = element_blank(), 
-        axis.line = element_blank(), 
-        axis.ticks = element_blank(), 
-        panel.border = element_blank(), 
-        panel.grid = element_blank(), 
-        axis.title = element_blank(),
-        legend.position = "right",
-        legend.title = element_blank()) +
-  ggtitle("Percent EHR Usage")
+Because we had many categorical variables with a large number of levels, we used association rule learning to explore the relationship between our variables of interest. From this method, we found that the following factors had the most meaningful associations:
+
+* Medical School attended
+* Primary Specialty
+* Gender
+
+However, we decided not to include medical school and primary specialty in our final model because medical school and primary specialty are highly correlated (think specialty-specific school such as chiropractic schools) and there were too many categorical levels of these variables to gain valuable insights regarding correlation.
+
+```{r phys only data, eval=FALSE}
+dat <- readRDS("~/Desktop/BST 260/BST-260-Final-Project-Site/EPs.rds")
+
+EPs <- dat %>% filter(st %in% c(state.abb, "DC") & hosp_afl_1 == '') %>% 
+  filter(gndr %in% c("F", "M") & !is.na(grd_yr)) %>% 
+  mutate(yrs_grd = 2016 - as.integer(grd_yr),
+         cred = case_when(cred == '' ~ 'NA',
+                          TRUE ~ as.character(cred)),
+         cred = as.factor(cred),
+         ehr = case_when(ehr == 'Y' ~ 1,
+                         ehr == '' ~ 0),
+         ehr = as.factor(ehr)) %>% 
+  select(-hosp_afl_1, -hosp_afl_lbn_1, -frst_nm) %>% 
+  arrange(desc(ehr)) %>% 
+  distinct(npi, .keep_all = TRUE)
 ```
 
-Using Association Rule Learning, we found that the strongest associations exist between practitioners with the following characteristics:
 
-* Using 5 EHR products across 2 different vendors in the state of Minnesota
-* Using 7 EHR products across 2 different vendors in the state of California
-
-```{r,echo=FALSE}
-#most common specialties in general
-dat_merge %>% group_by(Primary.specialty) %>% summarize(num = n()) %>% arrange(desc(num))
-
-# most common state -> specialty
-#dat_merge %>% group_by(Business_State_Territory, Primary.specialty) %>% summarize(num = n()) %>% arrange(Business_State_Territory, desc(num))
+```{r, eval=FALSE}
+#physurl <- "https://raw.githubusercontent.com/euniceyeh/EHR-Project/blob/master/data/EPs.rds"
+#download.file(physurl, "EPs.rds", method = 'curl')
+#EPs <- readRDS("EPs.rds")
 ```
 
-### Hosp
+Using other exploratory methods such as plots and correlation matrices, we eliminated other variables that could be used to study the effects on EHR usage. We decided to study the effect of gender and years since graduation on EHR adoption among physicians, since there was adequate data on these variables and they were evenly distributed among the two outcome groups (use EHR/don't use EHR). 
+
+#### Our physician-level model looked at the effect of physician gender and years since graduation on adoption of electronic health records.
+
+Using logistic regression, we found that physician gender and years since graduation have statistically significant effects on the use of EHR among practitioners in the incentive program. The results of our model are presented and summarized below.
+
+ | Odds Ratio | Confidence Interval (lower) | Confidence Interval (upper)
+------------- | ------------- | -------------
+Intercept | 0.0410 | 0.0399 | 0.0421
+Gender (Male) | 2.0266 | 1.9732 | 2.0815
+Years Since Graduation | 1.0172 | 1.0163 | 1.01819
+Locations | 1.0024 | 0.9978 | 1.0060
+
+
+* Holding years since graduation and locations at a fixed value, the odds of adopting EHR for males is 2.0266 the odds of adopting EHR for females (102.6% higher odds).
+* Holding gender (male) and locations at a fixed value, the odds of adopting EHR has a 1.7% increase for each additional year since graduation.
+
+** check difference in values if remove locations**
+
+### The Hospital-Level Model
+
+
 
 * size of hospital influences all other hospital variables, so it is a confounder
 * female proportion has the strongest correlation to years since graduation?
 * 2 most strongly correlated variables = # phys and gross patient rev?
 * stratifying by gross patient revenue in GLM, the only significant = # phys
+
+
+

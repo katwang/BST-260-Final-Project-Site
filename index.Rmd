@@ -8,7 +8,9 @@ output: html_document
 
 ## Background and Motivation
 
-In the past 10 years, there has been a lot of discussion around the benefits and risks of adopting electronic health records (EHR's). Many news sources have covered the topic, and multiple government agencies have published recommendations and articles on the adoption of EHR's. In 2011, the Centers for Medicare & Medicaid Services initiated the Medicare and Medicaid Electronic Health Record Inventive Programs to encourage medical professionals to adopt EHR technology. From 2008 to 2015, the number of office-based practitioners with EHR systems doubled, proving that the popularity of EHR's are only increasing (https://dashboard.healthit.gov/quickstats/pages/physician-ehr-adoption-trends.php).
+In the past 10 years, there has been a lot of discussion around the benefits and risks of adopting electronic health records (EHR's). Many news sources have covered the topic, and multiple government agencies have published recommendations and articles on the adoption of EHR's. From 2008 to 2015, the number of office-based practitioners with EHR systems doubled, proving that the popularity of EHR's are only increasing [(Healthit.gov)](https://dashboard.healthit.gov/quickstats/pages/physician-ehr-adoption-trends.php).
+
+In 2011, the Centers for Medicare & Medicaid Services (CMS) initiated the Medicare and Medicaid Electronic Health Record Incentive Programs to encourage medical professionals to adopt EHR technology. The program includes incentives for different stages of implementation, including establishing EHR requirements, demonstrating meaningful use, and a final stage to demonstrate improved health outcomes that will start this year (2017).
 
 
 Suggested Citation:
@@ -17,9 +19,11 @@ Office of the National Coordinator for Health Information Technology. 'Office-ba
 
 ## Project Objectives
 
-Since EHR's are a technology-based implementation, our group wanted to see if younger physicans are more likely to adopt EHR technology. What are some of the factors that might be associated with adoptation of EHR's? Additionally, we know that physicians working in hospitals do not have a choice in adopting EHR's. As a result, we wanted to see if there were hospital-related factors affecting adoption of EHRs. 
+We looked at hospital and physician level data from 2016 to see if there might be some similar characteristics of healthcare providers who are and are not adopting EHR use. Since EHR's are a technology-based implementation, our group wanted to see if younger physicans are more likely to adopt EHR technology. What are some of the factors that might be associated with adoptation of EHR's? Additionally, we know that physicians working in hospitals do not have a choice in adopting EHR's. As a result, we wanted to see if there were hospital-related factors affecting adoption of EHRs. 
 
-We looked at hospital and phys data from 2016
+To qualify for the incentive program, participants in the program need to use certified EHR technology as recognized by CMS. This can include a comprehensive package offered by one vendor or different modules or products offered by different vendors. All must be certified, but practitioners have some choice in implementation. As a result, we also thought it might be interesting to see how vendors and products are distributed among the EHR users.
+
+We also hoped to gain some insight to see if there were any differences in trends across the United States - are the factors correlated with adoption of EHR's consistent across the country? Or are just a few states leading the pack?
 
 The following terms were defined as follows from our dataset:
 
@@ -30,13 +34,19 @@ The following terms were defined as follows from our dataset:
 
 
 ## Conclusions
+Ultimately, we found that a physician's gender and years since graduation were significantly correlated to use of Electronic Health Records. The odds of adopting EHR's were higher for males than they were for females, and the odds of adopting EHR's increased as the years since graduation increased. This was an interesting finding because we intially thought younger physicians may be more likely to adopt EHR's due to more familiarity with modern technology, but this was not the case. Note: we used years since graduation as an indicator of physician age.
+
+Hosp
+
+Regional
+
+Vendor?
+
 
 **footer?**
 For more detailed information regarding our analysis, please see the following links:
 
-**should i link directly to each file?*
-
-* Our data and code can be found in our project GitHub, available [here](https://euniceyeh.github.io/EHR-Project/work.html) and [here]()
+* Our data and code can be found in our project GitHub, available [here](https://euniceyeh.github.io/EHR-Project/work.html) and [here](https://github.com/euniceyeh/EHR-Project)
 * Screencast available [here]() *add link!!!!*
 
 

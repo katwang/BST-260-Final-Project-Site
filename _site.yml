@@ -1,13 +1,15 @@
-
-name: "bst-260-site"
-output_dir: "."
+name: bst-260-site
+output_dir: .
 navbar:
-  title: "BST 260"
+  title: BST 260
   left:
-    - text: "Home"
-      href: index.html
-    - text: "Analysis"
-      href: about.html
+  - text: Home
+    href: index.html
+  - text: Analysis
+    href: about.html
 output:
   html_document:
     theme: flatly
+    lib_dir: site_libs
+    self_contained: no
+
