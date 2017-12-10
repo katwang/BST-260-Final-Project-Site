@@ -3,7 +3,7 @@ output_dir: .
 navbar:
   title: BST 260
   left:
-  - text: Home
+  - text: Overview
     href: index.html
   - text: Analysis
     href: about.html
