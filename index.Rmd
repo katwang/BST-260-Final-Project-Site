@@ -7,7 +7,7 @@ output: html_document
 ```{r, echo=FALSE}
 library("htmltools")
 library("vembedr")
-embed_url("https://www.youtube.com/watch?v=vn9mMeWcgoM")
+embed_url("https://www.youtube.com/watch?v=ukJsGriRPTc&feature=youtu.be")
 ```
 
 
@@ -46,7 +46,7 @@ In our secondary analysis, we found that many vendors were specialized and were 
 #### For more detailed information regarding our analysis, please see the following links:
 
 * Our data and code can be found in our project GitHub, available [here](https://euniceyeh.github.io/EHR-Project/work.html) and [here](https://github.com/euniceyeh/EHR-Project)
-* Screencast available [here]() *add link!!!!*
+* Screencast available [here](https://www.youtube.com/watch?v=ukJsGriRPTc&feature=youtu.be) 
 
 #### References:
 
