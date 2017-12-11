@@ -63,9 +63,8 @@ Using other exploratory methods such as plots and correlation matrices, we elimi
 
 Using logistic regression, we found that physician gender and years since graduation have statistically significant effects on the use of EHR among practitioners in the incentive program. The results of our model are presented and summarized below.
 
- | Odds Ratio | Confidence Interval (lower) | Confidence Interval (upper)
-------------- | ------------- | -------------
-Intercept | 0.0410 | 0.0399 | 0.0421
+Variable | Odds Ratio | Confidence Interval (lower) | Confidence Interval (upper)
+------------- | ------------- | ------------- | -------------
 Gender (Male) | 2.0266 | 1.9732 | 2.0815
 Years Since Graduation | 1.0172 | 1.0163 | 1.01819
 Locations | 1.0024 | 0.9978 | 1.0060
@@ -74,17 +73,32 @@ Locations | 1.0024 | 0.9978 | 1.0060
 * Holding years since graduation and locations at a fixed value, the odds of adopting EHR for males is 2.0266 the odds of adopting EHR for females (102.6% higher odds).
 * Holding gender (male) and locations at a fixed value, the odds of adopting EHR has a 1.7% increase for each additional year since graduation.
 
-** check difference in values if remove locations**
 
 ### The Hospital-Level Model
 
+For hospital demographic information, we used correlation matrices to study the relationships between hospital demographics such as:
 
-* size of hospital influences all other hospital variables, so it is a confounder
-* female proportion has the strongest correlation to years since graduation?
-* 2 most strongly correlated variables = # phys and gross patient rev?
-* stratifying by gross patient revenue in GLM, the only significant = # phys
+* Number of staffed beds
+* Total discharges
+* Number of patient days
+* Gross patient revenue
 
+However, we found that these variables were highly correlated with each other and follow the same distributions by EHR use. This makes logical sense because these demographics are all related to hospital size.
 
+After observing strong associations between gross patient revenue and the other variables, we decided to stratify our analysis on revenue to account for confounding. We used more correlation matrices and fitted multiple models to find the best combination of hospital demographics that influenced the adoption of EHR's. Additionally, we rescaled the variables on the log scale to help normalize their distributions.
+
+#### Our hospital-level model looked at the effect of gross patient revenue and total discharges on hospitals' adoption of electronic health records.
+
+Using logistic regression, we added an interaction term between gross patient revenue and total discharges. We found that hospitals' gross patient revenue and total discharges have no statistically significant effect on the use of EHR among practitioners in the incentive program, despite being highly correlated to EHR usage. The results of our model are presented and summarized below.
+
+Variable (logged) | Odds Ratio | Confidence Interval (lower) | Confidence Interval (upper)
+------------- | ------------- | ------------- | -------------
+Gross Patient Revenue | 0.8679 | 0.14765 | 3.53518
+Total Discharges | 0.8066 | 0.07675 | 4.58805
+Interaction Term | 0.9967 | 0.87087 | 1.1898
+
+* If the total discharge is equal at 5000, the odds of using EHR is 2.92 times higher with each 10% increase in gross patient revenue.
+* If the gross patient revenue is equal at 5000, the odds of using EHR is 2.95 times higher with each 10 % increase in total discharges.
 
 ### Secondary Analyses
 
@@ -110,7 +124,7 @@ dat_merge %>% filter(Vendor_Name %in% vendors) %>%
     ggtitle("Most Popular Vendors")
 ```
 
-We compared the most common vendors to the most commone primary specialties and found some interesting patterns:
+We compared the most common vendors to the most common primary specialties and found some interesting patterns:
 
 ```{r, echo= FALSE}
 #specialty vs year since graduation
@@ -134,14 +148,14 @@ dat_merge %>%
   ggtitle("Top 10 Primary Specialties vs. Top 10 Vendors")
 ```
 
-Some vendors are highly specialized
+#### Some vendors are highly specialized
 
   - Integrated Practice Solutions is only used by chiropractors and is the most popular product among chiropractors
   - Eyefinity seems to only provide EHR products for eye care, since only opthalmologists and optometrists use their products
   - Modernizing Medicine is very popular with dermatologists
   - NextGen Healthcare seems to be the most popular EHR vendor in eye care
 
-Other vendors are just generally popular
+#### Other vendors are just generally popular
 
   - Examples include: Epic Systems, Cerner Corporation, and athenahealth
 
@@ -218,34 +232,6 @@ zip_mapdata %>%
   geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=2,alpha=.8) +
   scale_colour_gradientn(colors = brewer.pal(8, "Reds")) +
   coord_fixed(xlim = c(-88, -98),  ylim = c(42, 50), ratio = 1.5) +
-  theme_void() +
-  theme(legend.title = element_blank())
-```
-
-```{r, echo = FALSE}
-ny <- subset(states_map, region %in% c("new york"))
-
-zip_map_ny <- dat_merge %>% 
-  filter(!is.na(Graduation.year) & Business_State_Territory == "New York") %>% 
-  group_by(ZIP) %>% 
-  summarize(yrsgrad = mean(2016 - Graduation.year)) %>% 
-  left_join(zipcode, by = c("ZIP" = "zip"))
-
-zip_map_ny %>% 
-  ggplot() +
-  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
-  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=1,alpha=.8) +
-  scale_colour_gradientn(colors = brewer.pal(8, "Reds")) +
-  coord_fixed(xlim = c(-70, -80),  ylim = c(40, 45), ratio = 1.5) +
-  theme_void() +
-  theme(legend.title = element_blank())
-
-zip_map_ny %>% 
-  ggplot() +
-  geom_polygon(data=states_map, aes(x=long, y=lat, group = group),colour="grey50", fill="white") +
-  geom_point(aes(x=longitude, y=latitude, color = yrsgrad),size=1,alpha=.8) +
-  scale_colour_gradientn(colors = brewer.pal(8, "Reds")) +
-  coord_fixed(xlim = c(-72, -75),  ylim = c(40, 42), ratio = 1.5) +
   theme_void() +
   theme(legend.title = element_blank())
 ```

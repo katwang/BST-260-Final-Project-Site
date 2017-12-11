@@ -236,6 +236,7 @@ EPs &lt;- dat %&gt;% filter(st %in% c(state.abb, &quot;DC&quot;) &amp; hosp_afl_
 <table>
 <thead>
 <tr class="header">
+<th>Variable</th>
 <th>Odds Ratio</th>
 <th>Confidence Interval (lower)</th>
 <th>Confidence Interval (upper)</th>
@@ -243,24 +244,22 @@ EPs &lt;- dat %&gt;% filter(st %in% c(state.abb, &quot;DC&quot;) &amp; hosp_afl_
 </thead>
 <tbody>
 <tr class="odd">
-<td>Intercept</td>
-<td>0.0410</td>
-<td>0.0399</td>
-</tr>
-<tr class="even">
 <td>Gender (Male)</td>
 <td>2.0266</td>
 <td>1.9732</td>
+<td>2.0815</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Years Since Graduation</td>
 <td>1.0172</td>
 <td>1.0163</td>
+<td>1.01819</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Locations</td>
 <td>1.0024</td>
 <td>0.9978</td>
+<td>1.0060</td>
 </tr>
 </tbody>
 </table>
@@ -268,42 +267,91 @@ EPs &lt;- dat %&gt;% filter(st %in% c(state.abb, &quot;DC&quot;) &amp; hosp_afl_
 <li>Holding years since graduation and locations at a fixed value, the odds of adopting EHR for males is 2.0266 the odds of adopting EHR for females (102.6% higher odds).</li>
 <li>Holding gender (male) and locations at a fixed value, the odds of adopting EHR has a 1.7% increase for each additional year since graduation.</li>
 </ul>
-<p>** check difference in values if remove locations**</p>
 </div>
 </div>
 <div id="the-hospital-level-model" class="section level3">
 <h3>The Hospital-Level Model</h3>
+<p>For hospital demographic information, we used correlation matrices to study the relationships between hospital demographics such as:</p>
 <ul>
-<li>size of hospital influences all other hospital variables, so it is a confounder</li>
-<li>female proportion has the strongest correlation to years since graduation?</li>
-<li>2 most strongly correlated variables = # phys and gross patient rev?</li>
-<li>stratifying by gross patient revenue in GLM, the only significant = # phys</li>
+<li>Number of staffed beds</li>
+<li>Total discharges</li>
+<li>Number of patient days</li>
+<li>Gross patient revenue</li>
 </ul>
+<p>However, we found that these variables were highly correlated with each other and follow the same distributions by EHR use. This makes logical sense because these demographics are all related to hospital size.</p>
+<p>After observing strong associations between gross patient revenue and the other variables, we decided to stratify our analysis on revenue to account for confounding. We used more correlation matrices and fitted multiple models to find the best combination of hospital demographics that influenced the adoption of EHR’s. Additionally, we rescaled the variables on the log scale to help normalize their distributions.</p>
+<div id="our-hospital-level-model-looked-at-the-effect-of-gross-patient-revenue-and-total-discharges-on-hospitals-adoption-of-electronic-health-records." class="section level4">
+<h4>Our hospital-level model looked at the effect of gross patient revenue and total discharges on hospitals’ adoption of electronic health records.</h4>
+<p>Using logistic regression, we added an interaction term between gross patient revenue and total discharges. We found that hospitals’ gross patient revenue and total discharges have no statistically significant effect on the use of EHR among practitioners in the incentive program, despite being highly correlated to EHR usage. The results of our model are presented and summarized below.</p>
+<table style="width:78%;">
+<colgroup>
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+<col width="19%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable (logged)</th>
+<th>Odds Ratio</th>
+<th>Confidence Interval (lower)</th>
+<th>Confidence Interval (upper)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gross Patient Revenue</td>
+<td>0.8679</td>
+<td>0.14765</td>
+<td>3.53518</td>
+</tr>
+<tr class="even">
+<td>Total Discharges</td>
+<td>0.8066</td>
+<td>0.07675</td>
+<td>4.58805</td>
+</tr>
+<tr class="odd">
+<td>Interaction Term</td>
+<td>0.9967</td>
+<td>0.87087</td>
+<td>1.1898</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>If the total discharge is equal at 5000, the odds of using EHR is 2.92 times higher with each 10% increase in gross patient revenue.</li>
+<li>If the gross patient revenue is equal at 5000, the odds of using EHR is 2.95 times higher with each 10 % increase in total discharges.</li>
+</ul>
+</div>
 </div>
 <div id="secondary-analyses" class="section level3">
 <h3>Secondary Analyses</h3>
 <p>Of the 265 vendors used by practitioners in our dataset, we found that over 50% of the products used were from the top 10 most popular vendors.</p>
-<p><img src="about_files/figure-html/unnamed-chunk-49-1.png" width="672" /></p>
-<p>We compared the most common vendors to the most commone primary specialties and found some interesting patterns:</p>
-<p><img src="about_files/figure-html/unnamed-chunk-50-1.png" width="672" /></p>
-<p>Some vendors are highly specialized</p>
+<p><img src="about_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>We compared the most common vendors to the most common primary specialties and found some interesting patterns:</p>
+<p><img src="about_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<div id="some-vendors-are-highly-specialized" class="section level4">
+<h4>Some vendors are highly specialized</h4>
 <ul>
 <li>Integrated Practice Solutions is only used by chiropractors and is the most popular product among chiropractors</li>
 <li>Eyefinity seems to only provide EHR products for eye care, since only opthalmologists and optometrists use their products</li>
 <li>Modernizing Medicine is very popular with dermatologists</li>
 <li>NextGen Healthcare seems to be the most popular EHR vendor in eye care</li>
 </ul>
-<p>Other vendors are just generally popular</p>
+</div>
+<div id="other-vendors-are-just-generally-popular" class="section level4">
+<h4>Other vendors are just generally popular</h4>
 <ul>
 <li>Examples include: Epic Systems, Cerner Corporation, and athenahealth</li>
 </ul>
 <p>Across the country, we can see that the most popular vendors are used very popularly in Minnesota, but not in New York, Tennessee, Rhode Island, and Nevada.</p>
-<p><img src="about_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Interestingly, there tend to be younger (more recently trained) practitioners in Minnesota who use EHR compared to the rest of the United States.</p>
-<p><img src="about_files/figure-html/unnamed-chunk-52-1.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>Taking a closer look at the graduation year data in Minnesota, we can see that most physicians lived near Minneapolis. It also seemed like more recently graduated physicians lived near the city, while older physicians tended to live farther away in suburban or rural areas.</p>
-<p><img src="about_files/figure-html/unnamed-chunk-53-1.png" width="672" /></p>
-<p><img src="about_files/figure-html/unnamed-chunk-54-1.png" width="672" /><img src="about_files/figure-html/unnamed-chunk-54-2.png" width="672" /></p>
+<p><img src="about_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
 </div>
 
 

@@ -1,8 +1,15 @@
 ---
-title: "Trends in Adoption of Electronic Health Records in the United States"
+title: "Electronic Health Records: Who Uses It?"
 author: "Katherine Wang, Eunice Yeh, Lauren Yoo"
 output: html_document
 ---
+
+```{r, echo=FALSE}
+library("htmltools")
+library("vembedr")
+embed_url("https://www.youtube.com/watch?v=vn9mMeWcgoM")
+```
+
 
 
 ### Background and Motivation
@@ -20,7 +27,7 @@ To qualify for the incentive program, participants in the program need to use ce
 
 We also hoped to gain some insight to see if there were any differences in trends across the United States - are the factors correlated with adoption of EHR's consistent across the country? Or are just a few states leading the pack?
 
-The following terms were defined as follows from our dataset:
+The following terms were defined as follows by the Office of the National Coordinator for Health Information Technology:
 
 > * Physicians adopted a Basic EHR if they reported their practice performed all of the following computerized functions: patient demographics, patient problem lists, electronic lists of medications taken by patients, clinician notes, orders for medications, viewing laboratory results, and viewing imaging results. The core capabilities of a Basic EHR were defined by DesRoches, et al. in the 2008 manuscript.
 > * Any EHR system is a medical or health record system that is either all or partially electronic, and excludes systems solely for billing.
@@ -29,16 +36,11 @@ The following terms were defined as follows from our dataset:
 
 
 ### Conclusions
-Ultimately, we found that a physician's gender and years since graduation were significantly correlated to use of Electronic Health Records. The odds of adopting EHR's were higher for males than they were for females, and the odds of adopting EHR's increased as the years since graduation increased. This was an interesting finding because we intially thought younger physicians may be more likely to adopt EHR's due to more familiarity with modern technology, but this was not the case. Note: we used years since graduation as an indicator of physician age.
+Ultimately, we found that a physician's gender and years since graduation were significantly correlated to use of Electronic Health Records. The odds of adopting EHR's were higher for males than they were for females, and the odds of adopting EHR's increased as the years since graduation increased. Note: we used years since graduation as an indicator of physician age.
 
-Hosp
+On the hospital level, we did not find any factors that significantly affected EHR usage. We found that the information we had on hospitals were often highly correlated with each other, which made it hard to find any significant patterns.
 
-Regional
-
-Vendor?
-
-
-**footer?**
+In our secondary analysis, we found that many vendors were specialized and were only used by certain types of physicians. Practitioners in eye care had the highest EHR adoption rates, and a couple of the most popular vendors also seemed to offer products specifically for optometrists and opthalmologists. 
 
 
 #### For more detailed information regarding our analysis, please see the following links:
