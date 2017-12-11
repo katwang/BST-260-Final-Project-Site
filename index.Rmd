@@ -21,7 +21,7 @@ In 2011, the Centers for Medicare & Medicaid Services (CMS) initiated the Medica
 
 ### Project Objectives
 
-We looked at hospital and physician level data from 2016 to see if there might be some similar characteristics of healthcare providers who are and are not adopting EHR use. Since EHR's are a technology-based implementation, our group wanted to see if younger physicans are more likely to adopt EHR technology. What are some of the factors that might be associated with adoptation of EHR's? Additionally, we know that physicians working in hospitals do not have a choice in adopting EHR's. As a result, we wanted to see if there were hospital-related factors affecting adoption of EHRs. 
+We looked at hospital and physician level data from 2016 to see if there might be some similar characteristics of healthcare providers who are and are not adopting EHR use. Since EHR's are a technology-based implementation, our group wanted to see if younger physicians are more likely to adopt EHR technology. What are some of the factors that might be associated with adoption of EHR's? Additionally, we know that physicians working in hospitals do not have a choice in adopting EHR's. As a result, we wanted to see if there were hospital-related factors affecting adoption of EHRs. 
 
 To qualify for the incentive program, participants in the program need to use certified EHR technology as recognized by CMS. This can include a comprehensive package offered by one vendor or different modules or products offered by different vendors. All must be certified, but practitioners have some choice in implementation. As a result, we also thought it might be interesting to see how vendors and products are distributed among the EHR users.
 
@@ -40,7 +40,7 @@ Ultimately, we found that a physician's gender and years since graduation were s
 
 On the hospital level, we did not find any factors that significantly affected EHR usage. We found that the information we had on hospitals were often highly correlated with each other, which made it hard to find any significant patterns.
 
-In our secondary analysis, we found that many vendors were specialized and were only used by certain types of physicians. Practitioners in eye care had the highest EHR adoption rates, and a couple of the most popular vendors also seemed to offer products specifically for optometrists and opthalmologists. 
+In our secondary analysis, we found that many vendors were specialized and were only used by certain types of physicians. Practitioners in eye care had the highest EHR adoption rates, and a couple of the most popular vendors also seemed to offer products specifically for optometrists and ophthalmologists. 
 
 
 #### For more detailed information regarding our analysis, please see the following links:

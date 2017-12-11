@@ -151,7 +151,7 @@ dat_merge %>%
 #### Some vendors are highly specialized
 
   - Integrated Practice Solutions is only used by chiropractors and is the most popular product among chiropractors
-  - Eyefinity seems to only provide EHR products for eye care, since only opthalmologists and optometrists use their products
+  - Eyefinity seems to only provide EHR products for eye care, since only ophthalmologists and optometrists use their products
   - Modernizing Medicine is very popular with dermatologists
   - NextGen Healthcare seems to be the most popular EHR vendor in eye care
 
