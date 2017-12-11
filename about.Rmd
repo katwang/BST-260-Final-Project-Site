@@ -33,30 +33,6 @@ Because we had many categorical variables with a large number of levels, we used
 
 However, we decided not to include medical school and primary specialty in our final model because medical school and primary specialty are highly correlated (think specialty-specific school such as chiropractic schools) and there were too many categorical levels of these variables to gain valuable insights regarding correlation.
 
-```{r phys only data, eval=FALSE}
-dat <- readRDS("~/Desktop/BST 260/BST-260-Final-Project-Site/EPs.rds")
-
-EPs <- dat %>% filter(st %in% c(state.abb, "DC") & hosp_afl_1 == '') %>% 
-  filter(gndr %in% c("F", "M") & !is.na(grd_yr)) %>% 
-  mutate(yrs_grd = 2016 - as.integer(grd_yr),
-         cred = case_when(cred == '' ~ 'NA',
-                          TRUE ~ as.character(cred)),
-         cred = as.factor(cred),
-         ehr = case_when(ehr == 'Y' ~ 1,
-                         ehr == '' ~ 0),
-         ehr = as.factor(ehr)) %>% 
-  select(-hosp_afl_1, -hosp_afl_lbn_1, -frst_nm) %>% 
-  arrange(desc(ehr)) %>% 
-  distinct(npi, .keep_all = TRUE)
-```
-
-
-```{r, eval=FALSE}
-#physurl <- "https://raw.githubusercontent.com/euniceyeh/EHR-Project/blob/master/data/EPs.rds"
-#download.file(physurl, "EPs.rds", method = 'curl')
-#EPs <- readRDS("EPs.rds")
-```
-
 Using other exploratory methods such as plots and correlation matrices, we eliminated other variables that could be used to study the effects on EHR usage. We decided to study the effect of gender and years since graduation on EHR adoption among physicians, since there was adequate data on these variables and they were evenly distributed among the two outcome groups (use EHR/don't use EHR). 
 
 #### Our physician-level model looked at the effect of physician gender and years since graduation on adoption of electronic health records.
